@@ -1,8 +1,9 @@
-import express from "express";
-import { getActivityRecommendations } from "../controllers/openaiController";
+import { Router } from "express";
+import { getActivityRecommendations, getActivityHistory } from "../controllers/openaiController";
 
-const router = express.Router();
+const router = Router();
 
 router.post("/activities", getActivityRecommendations);
+router.get("/history/:email", getActivityHistory);
 
 export default router;
