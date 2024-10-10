@@ -3,7 +3,7 @@ import { useActivityHistory } from "./../../API/useActivityHistory";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
 
 const ActivityHistory: React.FC = () => {
-  const { history, loading, error } = useActivityHistory();
+  const { history, loading } = useActivityHistory();
 
   if (loading) {
     return <p>Laddar aktivitetshistorik...</p>;
@@ -14,7 +14,7 @@ const ActivityHistory: React.FC = () => {
       <h2 className="text-lg font-semibold text-primary mb-4">
         Din aktivitetshistorik:
       </h2>
-      {error && <p className="text-red-500">{error}</p>}
+
       {history.length > 0 ? (
         <ul className="space-y-4">
           {history.map((entry) => (

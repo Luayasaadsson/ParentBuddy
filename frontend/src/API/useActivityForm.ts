@@ -10,12 +10,25 @@ export const useActivityForm = () => {
     childAge: number,
     preferences: string,
     latitude: number,
-    longitude: number
+    longitude: number,
+    activityType: string,
+    duration: string,
+    budget: string,
+    equipment: boolean
   ) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await getActivityRecommendations(childAge, preferences, latitude, longitude);
+      const result = await getActivityRecommendations(
+        childAge,
+        preferences,
+        latitude,
+        longitude,
+        activityType,
+        duration,
+        budget,
+        equipment
+      );
       setRecommendation(result);
     } catch {
       setError("Could not fetch recommendations.");

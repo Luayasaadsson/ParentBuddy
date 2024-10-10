@@ -41,7 +41,15 @@ export const getActivityRecommendations = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
-  const { childAge, preferences, location } = req.body;
+  const {
+    childAge,
+    preferences,
+    location,
+    activityType,
+    duration,
+    budget,
+    equipment,
+  } = req.body;
 
   try {
     const userId = req.user?.userId;
@@ -65,13 +73,13 @@ export const getActivityRecommendations = async (
       role: "system",
       content:
         language === "swedish"
-          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på platsen (${location.latitude}, ${location.longitude}).`
-          : `You are an expert in providing parents with activity suggestions for children in English. Give recommendations in English based on the location (${location.latitude}, ${location.longitude}).`,
+          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på barnets ålder, plats (${location.latitude}, ${location.longitude}), preferenser, aktivitetstyp, längd på aktivitet, budget och nödvändig utrustning.`
+          : `You are an expert in providing parents with activity suggestions for children in English. Provide recommendations based on the child's age, location (${location.latitude}, ${location.longitude}), preferences, activity type, duration, budget, and necessary equipment.`,
     };
 
     const userMessage: ChatCompletionMessageParam = {
       role: "user",
-      content: `I have a child who is ${childAge} years old and prefers ${preferences}. Can you suggest some suitable activities in this location (${location.latitude}, ${location.longitude})?`,
+      content: `I have a child who is ${childAge} years old, prefers ${preferences}, and I am looking for ${activityType} activities that last ${duration} hours, with a budget of ${budget} and ${equipment} equipment.`,
     };
 
     const recommendation = await getActivityRecommendation([
@@ -88,7 +96,11 @@ export const getActivityRecommendations = async (
       user: user._id,
       recommendations: recommendation,
       preferences: preferences,
-      location: { latitude: location.latitude, longitude: location.longitude }, 
+      location: { latitude: location.latitude, longitude: location.longitude },
+      activityType,
+      duration,
+      budget,
+      equipment,
     });
 
     await activityHistory.save();
@@ -132,9 +144,7 @@ export const getActivityHistory = async (
     console.log("History found:", history);
 
     if (!history.length) {
-      res
-        .status(404)
-        .json({ error: "No activity history found for this user." });
+      res.status(200).json([]);
       return;
     }
 

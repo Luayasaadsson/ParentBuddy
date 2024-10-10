@@ -17,12 +17,16 @@ export const useActivityHistory = () => {
     setLoading(true);
     try {
       const result = await getActivityHistory();
-      const sortedHistory = result.sort(
-        (a: ActivityEntry, b: ActivityEntry) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-      );
-      setHistory(sortedHistory);
-      setError(null);
+      if (result && result.length > 0) {
+        const sortedHistory = result.sort(
+          (a: ActivityEntry, b: ActivityEntry) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setHistory(sortedHistory);
+        setError(null);
+      } else {
+        setHistory([]);
+      }
     } catch (err) {
       console.error("Error fetching activity history:", err);
       setError("Kunde inte hämta aktivitetshistorik.");

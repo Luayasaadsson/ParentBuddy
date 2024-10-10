@@ -73,7 +73,11 @@ export const getActivityRecommendations = async (
   childAge: number,
   preferences: string,
   latitude: number,
-  longitude: number
+  longitude: number,
+  activityType: string,
+  duration: string,
+  budget: string,
+  equipment: boolean
 ) => {
   const token = getToken();
 
@@ -85,7 +89,11 @@ export const getActivityRecommendations = async (
       {
         childAge,
         preferences,
-        location: { latitude, longitude }, 
+        location: { latitude, longitude },
+        activityType,
+        duration,
+        budget,
+        equipment,
       },
       {
         headers: {

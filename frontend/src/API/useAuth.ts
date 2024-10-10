@@ -39,13 +39,22 @@ export const useAuth = () => {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
           await registerUser(name, email, password, latitude, longitude);
-          setSuccess("Användare skapad. Du kan nu logga in.");
+
+          const token = await loginUser(email, password, latitude, longitude);
+          localStorage.setItem("token", token);
+          setSuccess("Användare skapad och inloggad.");
           setError(null);
+          window.location.reload();
         });
       } else {
         await registerUser(name, email, password);
-        setSuccess("Användare skapad. Du kan nu logga in.");
+
+        // Logga in utan platsdata
+        const token = await loginUser(email, password);
+        localStorage.setItem("token", token);
+        setSuccess("Användare skapad och inloggad.");
         setError(null);
+        window.location.reload();
       }
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
