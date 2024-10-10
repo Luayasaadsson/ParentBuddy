@@ -5,6 +5,7 @@ interface IActivityHistory extends Document {
   recommendations: string;
   preferences: string;
   date: Date;
+  isFavorited: boolean;
 }
 
 const activityHistorySchema: Schema = new Schema({
@@ -12,6 +13,7 @@ const activityHistorySchema: Schema = new Schema({
   recommendations: { type: String, required: true },
   preferences: { type: String, required: true },
   date: { type: Date, default: Date.now },
+  isFavorited: { type: Boolean, default: false },
 });
 
 export default mongoose.model<IActivityHistory>(

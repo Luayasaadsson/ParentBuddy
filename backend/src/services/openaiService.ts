@@ -24,9 +24,9 @@ export const getActivityRecommendation = async (
     console.log("Sending the following messages to OpenAI:", conversation);
     const response = await openai.chat.completions.create({
       model: "gpt-4",
-    /*   model: "gpt-3.5-turbo", */
+      /*   model: "gpt-3.5-turbo", */
       messages: conversation,
-      max_tokens: 500,
+      max_tokens: 1000,
       temperature: 0.5,
     });
 

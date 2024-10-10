@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { getActivityHistory } from "./api";
+import { getActivityHistory, toggleFavoriteActivity } from "./api";
 
 interface ActivityEntry {
   _id: string;
   recommendations: string;
   preferences: string;
   date: string;
+  isFavorited?: boolean;
 }
 
 export const useActivityHistory = () => {
@@ -35,6 +36,21 @@ export const useActivityHistory = () => {
     }
   };
 
+  const handleFavoriteToggle = async (activityId: string) => {
+    try {
+      await toggleFavoriteActivity(activityId);
+      setHistory((prevHistory) =>
+        prevHistory.map((entry) =>
+          entry._id === activityId
+            ? { ...entry, isFavorited: !entry.isFavorited }
+            : entry
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+    }
+  };
+
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -43,5 +59,6 @@ export const useActivityHistory = () => {
     history,
     loading,
     error,
+    handleFavoriteToggle,
   };
 };

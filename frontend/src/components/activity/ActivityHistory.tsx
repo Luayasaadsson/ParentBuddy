@@ -3,7 +3,7 @@ import { useActivityHistory } from "./../../API/useActivityHistory";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
 
 const ActivityHistory: React.FC = () => {
-  const { history, loading } = useActivityHistory();
+  const { history, loading, handleFavoriteToggle } = useActivityHistory();
 
   if (loading) {
     return <p>Laddar aktivitetshistorik...</p>;
@@ -18,7 +18,7 @@ const ActivityHistory: React.FC = () => {
       {history.length > 0 ? (
         <ul className="space-y-4">
           {history.map((entry) => (
-            <li key={entry._id} className="border-b py-4">
+            <li key={entry._id} className="border-b py-4 relative group">
               <p>
                 <strong>Datum:</strong> {new Date(entry.date).toLocaleString()}
               </p>
@@ -26,6 +26,15 @@ const ActivityHistory: React.FC = () => {
                 <strong>Preferenser:</strong> {entry.preferences}
               </p>
               <RecommendationDisplay recommendation={entry.recommendations} />
+
+              <button
+                onClick={() => handleFavoriteToggle(entry._id)}
+                className={`absolute right-0 top-0 m-2 p-2 rounded-full ${
+                  entry.isFavorited ? "text-yellow-500" : "text-gray-500"
+                } group-hover:block`}
+              >
+                {entry.isFavorited ? "⭐" : "☆"}
+              </button>
             </li>
           ))}
         </ul>

@@ -108,3 +108,61 @@ export const getActivityRecommendations = async (
     throw error;
   }
 };
+
+// Function to favorite/unfavorite an activity
+export const toggleFavoriteActivity = async (activityId: string) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token available");
+
+  try {
+    const response = await axios.put(
+      `${API_URL}/activities/${activityId}/favorite`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error favoriting activity:", error);
+    throw error;
+  }
+};
+
+export const getFavoriteActivities = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token available");
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}/favorites`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching favorite activities:", error);
+    throw error;
+  }
+};
+
+export const deleteFavoriteActivity = async (activityId: string) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token available");
+
+  try {
+    const response = await axios.delete(`${API_URL}/activities/${activityId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting activity:", error);
+    throw error;
+  }
+};
