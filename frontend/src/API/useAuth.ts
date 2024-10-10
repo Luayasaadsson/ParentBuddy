@@ -8,9 +8,18 @@ export const useAuth = () => {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      await loginUser(email, password);
-      setError(null);
-      window.location.reload();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const { latitude, longitude } = position.coords;
+          await loginUser(email, password, latitude, longitude);
+          setError(null);
+          window.location.reload();
+        });
+      } else {
+        await loginUser(email, password);
+        setError(null);
+        window.location.reload();
+      }
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         setError(err.response.data.message || "Inloggning misslyckades");
@@ -26,9 +35,18 @@ export const useAuth = () => {
     password: string
   ) => {
     try {
-      await registerUser(name, email, password);
-      setSuccess("Användare skapad. Du kan nu logga in.");
-      setError(null);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const { latitude, longitude } = position.coords;
+          await registerUser(name, email, password, latitude, longitude);
+          setSuccess("Användare skapad. Du kan nu logga in.");
+          setError(null);
+        });
+      } else {
+        await registerUser(name, email, password);
+        setSuccess("Användare skapad. Du kan nu logga in.");
+        setError(null);
+      }
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(

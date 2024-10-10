@@ -16,9 +16,26 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (childAge && preferences) {
-      await fetchRecommendations(Number(childAge), preferences); // Calling the function from the hook
-      onNewRecommendation(); // Updating history
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          await fetchRecommendations(
+            Number(childAge),
+            preferences,
+            latitude,
+            longitude
+          );
+          onNewRecommendation();
+        },
+        (error) => {
+          console.error("Platsinformation kunde inte hämtas:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation är inte tillgängligt i denna webbläsare.");
     }
   };
 

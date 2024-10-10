@@ -8,16 +8,17 @@ export const useActivityForm = () => {
 
   const fetchRecommendations = async (
     childAge: number,
-    preferences: string
+    preferences: string,
+    latitude: number,
+    longitude: number
   ) => {
     setLoading(true);
+    setError(null);
     try {
-      const result = await getActivityRecommendations(childAge, preferences);
+      const result = await getActivityRecommendations(childAge, preferences, latitude, longitude);
       setRecommendation(result);
-      setError(null);
-    } catch (err) {
-      setError("Error fetching recommendations");
-      console.error("Error fetching activity recommendations:", err);
+    } catch {
+      setError("Could not fetch recommendations.");
     } finally {
       setLoading(false);
     }

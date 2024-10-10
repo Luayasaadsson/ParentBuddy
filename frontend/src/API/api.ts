@@ -9,13 +9,16 @@ const getToken = () => localStorage.getItem("token");
 export const registerUser = async (
   name: string,
   email: string,
-  password: string
+  password: string,
+  lat?: number,
+  lon?: number
 ): Promise<void> => {
   try {
     const response = await axios.post(`${API_URL}/register`, {
       name,
       email,
       password,
+      location: { latitude: lat, longitude: lon },
     });
     return response.data;
   } catch (error) {
@@ -27,10 +30,16 @@ export const registerUser = async (
 // Function for login
 export const loginUser = async (
   email: string,
-  password: string
+  password: string,
+  lat?: number,
+  lon?: number
 ): Promise<string> => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { email, password });
+    const response = await axios.post(`${API_URL}/login`, {
+      email,
+      password,
+      location: { latitude: lat, longitude: lon },
+    });
     const token = response.data.token;
     localStorage.setItem("token", token); // Save token in localStorage
     return token;
@@ -62,13 +71,13 @@ export const getActivityHistory = async () => {
 // Function to send recommendations and get response from server
 export const getActivityRecommendations = async (
   childAge: number,
-  preferences: string
+  preferences: string,
+  latitude: number,
+  longitude: number
 ) => {
   const token = getToken();
 
   if (!token) throw new Error("No token available");
-
-  console.log("Using token:", token);
 
   try {
     const response = await axios.post(
@@ -76,6 +85,7 @@ export const getActivityRecommendations = async (
       {
         childAge,
         preferences,
+        location: { latitude, longitude }, 
       },
       {
         headers: {

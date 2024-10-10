@@ -8,7 +8,7 @@ export const registerUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { name, email, password, location } = req.body;
 
   try {
     // Check if the user already exists
@@ -26,6 +26,9 @@ export const registerUser = async (
       name,
       email,
       password: hashedPassword,
+      location: location
+        ? { latitude: location.lat, longitude: location.lon }
+        : undefined,
     });
 
     await newUser.save();
@@ -38,7 +41,7 @@ export const registerUser = async (
 
 // Login function
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { email, password, location } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -48,10 +51,18 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Verify the password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       res.status(400).json({ message: "Incorrect password" });
       return;
+    }
+
+    if (location) {
+      user.location = {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      };
+      await user.save();
     }
 
     // Generate JWT
@@ -63,7 +74,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       }
     );
 
-    res.json({ token });
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

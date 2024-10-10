@@ -41,7 +41,7 @@ export const getActivityRecommendations = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
-  const { childAge, preferences } = req.body;
+  const { childAge, preferences, location } = req.body;
 
   try {
     const userId = req.user?.userId;
@@ -65,13 +65,13 @@ export const getActivityRecommendations = async (
       role: "system",
       content:
         language === "swedish"
-          ? "Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska."
-          : "You are an expert in providing parents with activity suggestions for children in English. Give recommendations in English.",
+          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på platsen (${location.latitude}, ${location.longitude}).`
+          : `You are an expert in providing parents with activity suggestions for children in English. Give recommendations in English based on the location (${location.latitude}, ${location.longitude}).`,
     };
 
     const userMessage: ChatCompletionMessageParam = {
       role: "user",
-      content: `I have a child who is ${childAge} years old and prefers ${preferences}. Can you suggest some suitable activities?`,
+      content: `I have a child who is ${childAge} years old and prefers ${preferences}. Can you suggest some suitable activities in this location (${location.latitude}, ${location.longitude})?`,
     };
 
     const recommendation = await getActivityRecommendation([
@@ -88,6 +88,7 @@ export const getActivityRecommendations = async (
       user: user._id,
       recommendations: recommendation,
       preferences: preferences,
+      location: { latitude: location.latitude, longitude: location.longitude }, 
     });
 
     await activityHistory.save();
