@@ -8,18 +8,9 @@ export const useAuth = () => {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const { latitude, longitude } = position.coords;
-          await loginUser(email, password, latitude, longitude);
-          setError(null);
-          window.location.reload();
-        });
-      } else {
-        await loginUser(email, password);
-        setError(null);
-        window.location.reload();
-      }
+      await loginUser(email, password);
+      setError(null);
+      window.location.reload();
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
         setError(err.response.data.message || "Inloggning misslyckades");
@@ -35,27 +26,13 @@ export const useAuth = () => {
     password: string
   ) => {
     try {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const { latitude, longitude } = position.coords;
-          await registerUser(name, email, password, latitude, longitude);
+      await registerUser(name, email, password);
 
-          const token = await loginUser(email, password, latitude, longitude);
-          localStorage.setItem("token", token);
-          setSuccess("Användare skapad och inloggad.");
-          setError(null);
-          window.location.reload();
-        });
-      } else {
-        await registerUser(name, email, password);
-
-        // Logga in utan platsdata
-        const token = await loginUser(email, password);
-        localStorage.setItem("token", token);
-        setSuccess("Användare skapad och inloggad.");
-        setError(null);
-        window.location.reload();
-      }
+      const token = await loginUser(email, password);
+      localStorage.setItem("token", token);
+      setSuccess("Användare skapad och inloggad.");
+      setError(null);
+      window.location.reload();
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
         setError(

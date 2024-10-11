@@ -17,34 +17,68 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
   const [equipment, setEquipment] = useState<boolean>(false);
   const { recommendation, loading, error, fetchRecommendations } =
     useActivityForm();
+  const [geoLoading, setGeoLoading] = useState(false);
+
+  // Function to get user location
+  const getUserLocation = (): Promise<{
+    latitude: number;
+    longitude: number;
+  }> => {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            resolve({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+          () => reject("User denied Geolocation")
+        );
+      } else {
+        reject("Geolocation not available");
+      }
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setGeoLoading(true);
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+    // Default position if geolocation is not available
+    const defaultLatitude = 59.3293; // Stockholm
+    const defaultLongitude = 18.0686;
 
-          await fetchRecommendations(
-            Number(childAge),
-            preferences,
-            latitude,
-            longitude,
-            activityType,
-            duration,
-            budget,
-            equipment
-          );
-          onNewRecommendation();
-        },
-        (error) => {
-          console.error("Platsinformation kunde inte hämtas:", error);
-        }
+    try {
+      const { latitude, longitude } = await getUserLocation();
+      await fetchRecommendations(
+        Number(childAge),
+        preferences,
+        latitude,
+        longitude,
+        activityType,
+        duration,
+        budget,
+        equipment
       );
-    } else {
-      console.error("Geolocation är inte tillgängligt i denna webbläsare.");
+    } catch (error) {
+      console.warn(error);
+      // Using default position if geolocation fails
+      await fetchRecommendations(
+        Number(childAge),
+        preferences,
+        defaultLatitude,
+        defaultLongitude,
+        activityType,
+        duration,
+        budget,
+        equipment
+      );
+    } finally {
+      setGeoLoading(false);
     }
+
+    onNewRecommendation();
   };
 
   return (
@@ -132,11 +166,13 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
         <button
           type="submit"
           className="bg-primary text-white py-2 px-4 rounded hover:bg-secondary mt-4"
+          disabled={geoLoading} // Disable button while fetching location
         >
-          Få rekommendationer
+          {geoLoading ? "Hämtar plats..." : "Få rekommendationer"}
         </button>
       </form>
 
+      {geoLoading && <ChatLoader />}
       {loading && <ChatLoader />}
 
       {error && <p className="text-red-500">{error}</p>}
