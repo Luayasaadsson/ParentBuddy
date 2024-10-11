@@ -3,7 +3,8 @@ import { useActivityHistory } from "./../../API/useActivityHistory";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
 
 const ActivityHistory: React.FC = () => {
-  const { history, loading, handleFavoriteToggle } = useActivityHistory();
+  const { history, loading, handleFavoriteToggle, handleDeleteActivity } =
+    useActivityHistory();
 
   if (loading) {
     return <p>Laddar aktivitetshistorik...</p>;
@@ -34,6 +35,12 @@ const ActivityHistory: React.FC = () => {
                 } group-hover:block`}
               >
                 {entry.isFavorited ? "⭐" : "☆"}
+              </button>
+              <button
+                onClick={() => handleDeleteActivity(entry._id)}
+                className="absolute right-10 top-0 m-2 p-2 rounded-full text-red-500 hover:bg-gray-200"
+              >
+                Ta bort
               </button>
             </li>
           ))}

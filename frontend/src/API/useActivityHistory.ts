@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { getActivityHistory, toggleFavoriteActivity } from "./api";
+import {
+  getActivityHistory,
+  toggleFavoriteActivity,
+  deleteFavoriteActivity,
+} from "./api";
 
 interface ActivityEntry {
   _id: string;
@@ -51,6 +55,23 @@ export const useActivityHistory = () => {
     }
   };
 
+  const handleDeleteActivity = async (activityId: string) => {
+    const confirmed = window.confirm(
+      "Är du säker på att du vill ta bort denna aktivitet?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteFavoriteActivity(activityId);
+      setHistory((prevHistory) =>
+        prevHistory.filter((entry) => entry._id !== activityId)
+      );
+    } catch (error) {
+      console.error("Error deleting activity:", error);
+    }
+  };
+
   useEffect(() => {
     fetchHistory();
   }, []);
@@ -60,5 +81,6 @@ export const useActivityHistory = () => {
     loading,
     error,
     handleFavoriteToggle,
+    handleDeleteActivity,
   };
 };
