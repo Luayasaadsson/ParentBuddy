@@ -17,6 +17,7 @@ export const useActivityHistory = () => {
   const [history, setHistory] = useState<ActivityEntry[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [activityToDelete, setActivityToDelete] = useState<string | null>(null);
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -55,18 +56,19 @@ export const useActivityHistory = () => {
     }
   };
 
-  const handleDeleteActivity = async (activityId: string) => {
-    const confirmed = window.confirm(
-      "Är du säker på att du vill ta bort denna aktivitet?"
-    );
+  const handleDeleteActivity = (activityId: string) => {
+    setActivityToDelete(activityId);
+  };
 
-    if (!confirmed) return;
+  const confirmDeleteActivity = async () => {
+    if (!activityToDelete) return;
 
     try {
-      await deleteFavoriteActivity(activityId);
+      await deleteFavoriteActivity(activityToDelete);
       setHistory((prevHistory) =>
-        prevHistory.filter((entry) => entry._id !== activityId)
+        prevHistory.filter((entry) => entry._id !== activityToDelete)
       );
+      setActivityToDelete(null);
     } catch (error) {
       console.error("Error deleting activity:", error);
     }
@@ -82,5 +84,7 @@ export const useActivityHistory = () => {
     error,
     handleFavoriteToggle,
     handleDeleteActivity,
+    confirmDeleteActivity,
+    activityToDelete,
   };
 };

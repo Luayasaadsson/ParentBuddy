@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { useActivityHistory } from "./../../API/useActivityHistory";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
 import ChatLoader from "./../../components/shared/ChatLoader";
 import { Button } from "@/components/ui/button";
 import { FaHeart } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 const ActivityHistory: React.FC = () => {
-  const { history, loading, handleFavoriteToggle, handleDeleteActivity } =
-    useActivityHistory();
+  const {
+    history,
+    loading,
+    handleFavoriteToggle,
+    handleDeleteActivity,
+    confirmDeleteActivity,
+    activityToDelete,
+  } = useActivityHistory();
+  const [openDialog, setOpenDialog] = useState(false);
 
   if (loading) {
     return <ChatLoader />;
@@ -43,7 +60,10 @@ const ActivityHistory: React.FC = () => {
                   </Button>
                   <Button
                     variant="ghost"
-                    onClick={() => handleDeleteActivity(entry._id)}
+                    onClick={() => {
+                      handleDeleteActivity(entry._id);
+                      setOpenDialog(true);
+                    }}
                     size="icon"
                     className="p-0 hover:bg-transparent"
                   >
@@ -69,6 +89,35 @@ const ActivityHistory: React.FC = () => {
         </ul>
       ) : (
         <p>Ingen historik hittades.</p>
+      )}
+
+      {activityToDelete && (
+        <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Bekräfta borttagning</AlertDialogTitle>
+              <AlertDialogDescription>
+                Är du säker på att du vill ta bort denna favoritaktivitet? Detta
+                kan inte ångras.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setOpenDialog(false)}>
+                Avbryt
+              </AlertDialogCancel>
+              <AlertDialogAction
+                className="hover:bg-red-600"
+                onClick={() => {
+                  confirmDeleteActivity();
+                  setOpenDialog(false);
+                }}
+              >
+                Ja, ta bort
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </div>
   );

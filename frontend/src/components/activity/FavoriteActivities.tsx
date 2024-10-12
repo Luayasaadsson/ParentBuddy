@@ -3,6 +3,17 @@ import { getFavoriteActivities, deleteFavoriteActivity } from "./../../API/api";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
 import { Button } from "@/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 interface FavoriteActivity {
   _id: string;
@@ -40,11 +51,6 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
 
   // Function to delete a favorite
   const handleDeleteFavorite = async (activityId: string) => {
-    const confirmed = window.confirm(
-      "Är du säker på att du vill ta bort denna favorit?"
-    );
-    if (!confirmed) return;
-
     try {
       await deleteFavoriteActivity(activityId);
       setFavorites((prevFavorites) =>
@@ -71,14 +77,35 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
             >
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div className="md:order-2 flex space-x-2 mb-4 md:mb-0 ml-auto md:absolute md:top-4 md:right-4">
-                  <Button
-                    variant="ghost"
-                    onClick={() => handleDeleteFavorite(favorite._id)}
-                    size="icon"
-                    className="p-0 hover:bg-transparent"
-                  >
-                    <FaRegTrashCan className="h-5 w-5 text-gray-500 hover:text-red-500" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-0 hover:bg-transparent"
+                      >
+                        <FaRegTrashCan className="h-5 w-5 text-gray-500 hover:text-red-500" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Ta bort favorit</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Är du säker på att du vill ta bort denna
+                          favoritaktivitet? Detta kan inte ångras.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteFavorite(favorite._id)}
+                          className="hover:bg-red-600"
+                        >
+                          Ja, ta bort
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
 
                 <div className="md:order-1 text-sm md:text-base">
