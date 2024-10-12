@@ -10,6 +10,7 @@ export const useAuthStatus = () => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
     setIsAuthenticated(false);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useAuthStatus } from "./components/hooks/useAuthStatus";
 import AuthWrapper from "./components/containers/AuthWrapper";
@@ -10,6 +10,14 @@ import { Button } from "@/components/ui/button";
 const App: React.FC = () => {
   const { isAuthenticated, logout } = useAuthStatus();
   const [historyUpdated, setHistoryUpdated] = useState<number>(0);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("name");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
 
   const handleNewRecommendation = () => {
     setHistoryUpdated((prev) => prev + 1);
@@ -37,6 +45,10 @@ const App: React.FC = () => {
             Logga ut
           </Button>
         </nav>
+
+        <div className="text-center text-xl text-secondary mb-4">
+          {userName && `Välkommen tillbaka, ${userName}!`}
+        </div>
 
         <div className="max-w-4xl mx-auto bg-card p-6 rounded-lg shadow-md">
           <Routes>

@@ -40,8 +40,12 @@ export const loginUser = async (
       password,
       location: { latitude: lat, longitude: lon },
     });
+
     const token = response.data.token;
-    localStorage.setItem("token", token); // Save token in localStorage
+    const userName = response.data.name;
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("name", userName);
     return token;
   } catch (error) {
     console.error("Error during login:", error);
