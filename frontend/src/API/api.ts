@@ -76,8 +76,7 @@ export const getActivityRecommendations = async (
   longitude: number,
   activityType: string,
   duration: string,
-  budget: string,
-  equipment: boolean
+  budget: string
 ) => {
   const token = getToken();
 
@@ -93,7 +92,6 @@ export const getActivityRecommendations = async (
         activityType,
         duration,
         budget,
-        equipment,
       },
       {
         headers: {

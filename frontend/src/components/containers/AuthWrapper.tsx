@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Login from "../auth/Login";
 import RegisterUser from "../auth/RegisterUser";
+import { Button } from "@/components/ui/button";
 
 const AuthWrapper: React.FC = () => {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -8,14 +9,16 @@ const AuthWrapper: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
       {isRegistering ? <RegisterUser /> : <Login />}
-      <button
+      <Button
         onClick={() => setIsRegistering(!isRegistering)}
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+        variant="default"
+        size="lg"
+        className="mt-4"
       >
         {isRegistering
           ? "Har du redan ett konto? Logga in"
           : "Har du inget konto? Registrera dig"}
-      </button>
+      </Button>
     </div>
   );
 };

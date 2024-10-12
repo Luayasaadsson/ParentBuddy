@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getFavoriteActivities, deleteFavoriteActivity } from "./../../API/api";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
+import { Button } from "@/components/ui/button";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 interface FavoriteActivity {
   _id: string;
@@ -10,7 +12,7 @@ interface FavoriteActivity {
 }
 
 interface FavoriteActivitiesProps {
-  onFavoritesUpdated: () => void; // Callback för att uppdatera ActivityForm
+  onFavoritesUpdated: () => void; // Callback to update ActivityForm
 }
 
 const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
@@ -63,24 +65,35 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
       {favorites.length > 0 ? (
         <ul className="space-y-4">
           {favorites.map((favorite) => (
-            <li key={favorite._id} className="border-b py-4 relative group">
-              <p>
-                <strong>Datum:</strong>{" "}
-                {new Date(favorite.date).toLocaleString()}
-              </p>
-              <p>
-                <strong>Preferenser:</strong> {favorite.preferences}
-              </p>
-              <RecommendationDisplay
-                recommendation={favorite.recommendations}
-              />
+            <li
+              key={favorite._id}
+              className="relative border p-4 rounded-lg bg-gray-50"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div className="md:order-2 flex space-x-2 mb-4 md:mb-0 ml-auto md:absolute md:top-4 md:right-4">
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleDeleteFavorite(favorite._id)}
+                    size="icon"
+                    className="p-0 hover:bg-transparent"
+                  >
+                    <FaRegTrashCan className="h-5 w-5 text-gray-500 hover:text-red-500" />
+                  </Button>
+                </div>
 
-              <button
-                onClick={() => handleDeleteFavorite(favorite._id)}
-                className="absolute right-0 top-0 m-2 p-2 rounded-full text-red-500 hover:bg-gray-200"
-              >
-                Ta bort
-              </button>
+                <div className="md:order-1 text-sm md:text-base">
+                  <p className="mb-2">
+                    <strong>Datum:</strong>{" "}
+                    {new Date(favorite.date).toLocaleString()}
+                  </p>
+                  <p className="mb-2">
+                    <strong>Preferenser:</strong> {favorite.preferences}
+                  </p>
+                  <RecommendationDisplay
+                    recommendation={favorite.recommendations}
+                  />
+                </div>
+              </div>
             </li>
           ))}
         </ul>

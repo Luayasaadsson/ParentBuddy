@@ -41,15 +41,8 @@ export const getActivityRecommendations = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
-  const {
-    childAge,
-    preferences,
-    location,
-    activityType,
-    duration,
-    budget,
-    equipment,
-  } = req.body;
+  const { childAge, preferences, location, activityType, duration, budget } =
+    req.body;
 
   try {
     const userId = req.user?.userId;
@@ -73,13 +66,13 @@ export const getActivityRecommendations = async (
       role: "system",
       content:
         language === "swedish"
-          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på barnets ålder, plats (${location.latitude}, ${location.longitude}), preferenser, aktivitetstyp, längd på aktivitet, budget och nödvändig utrustning.`
-          : `You are an expert in providing parents with activity suggestions for children in English. Provide recommendations based on the child's age, location (${location.latitude}, ${location.longitude}), preferences, activity type, duration, budget, and necessary equipment.`,
+          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på barnets ålder, plats (${location.latitude}, ${location.longitude}), preferenser, aktivitetstyp, längd på aktivitet och budget.`
+          : `You are an expert in providing parents with activity suggestions for children. Provide recommendations in English based on the child's age, location (${location.latitude}, ${location.longitude}), preferences, activity type, duration, and budget.`,
     };
 
     const userMessage: ChatCompletionMessageParam = {
       role: "user",
-      content: `I have a child who is ${childAge} years old, prefers ${preferences}, and I am looking for ${activityType} activities that last ${duration} hours, with a budget of ${budget} and ${equipment} equipment.`,
+      content: `I have a child who is ${childAge} years old, prefers ${preferences}, and I am looking for ${activityType} activities that last ${duration} hours, with a budget of ${budget}.`,
     };
 
     const recommendation = await getActivityRecommendation([
@@ -100,7 +93,6 @@ export const getActivityRecommendations = async (
       activityType,
       duration,
       budget,
-      equipment,
     });
 
     await activityHistory.save();

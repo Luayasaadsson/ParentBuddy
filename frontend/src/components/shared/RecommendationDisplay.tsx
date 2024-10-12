@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 interface RecommendationProps {
   recommendation: string;
@@ -35,14 +42,18 @@ const RecommendationDisplay: React.FC<RecommendationProps> = ({
   const { introduction, formattedList } = formatRecommendation();
 
   return (
-    <div className="mt-6">
-      <p className="mb-4">{introduction}</p>{" "}
-      {/* Displays the chatbot's introduction */}
-      <ol className="list-decimal list-inside">
-        {formattedList}{" "}
-        {/* Displays the formatted list without markdown stars */}
-      </ol>
-    </div>
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle>Rekommenderad Aktivitet</CardTitle>
+        <CardDescription>{introduction}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ol className="list-decimal list-inside">
+          {formattedList}{" "}
+          {/* Displays the formatted list without markdown stars */}
+        </ol>
+      </CardContent>
+    </Card>
   );
 };
 

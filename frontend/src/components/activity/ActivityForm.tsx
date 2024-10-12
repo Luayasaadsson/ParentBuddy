@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { useActivityForm } from "./../../API/useActivityForm";
 import ChatLoader from "./../../components/shared/ChatLoader";
 import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
-import FormInput from "./../common/FormInput";
+import { Button } from "./../ui/button";
+import { Input } from "./../ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "./../ui/select";
 
 interface ActivityFormProps {
   onNewRecommendation: () => void; // Prop for callback
@@ -14,7 +22,6 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
   const [activityType, setActivityType] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [budget, setBudget] = useState<string>("");
-  const [equipment, setEquipment] = useState<boolean>(false);
   const { recommendation, loading, error, fetchRecommendations } =
     useActivityForm();
   const [geoLoading, setGeoLoading] = useState(false);
@@ -58,12 +65,10 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
         longitude,
         activityType,
         duration,
-        budget,
-        equipment
+        budget
       );
     } catch (error) {
       console.warn(error);
-      // Using default position if geolocation fails
       await fetchRecommendations(
         Number(childAge),
         preferences,
@@ -71,8 +76,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
         defaultLongitude,
         activityType,
         duration,
-        budget,
-        equipment
+        budget
       );
     } finally {
       setGeoLoading(false);
@@ -82,100 +86,115 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-primary-100 rounded-lg shadow-lg mb-6">
       <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Barnets ålder"
-          type="text"
-          value={childAge}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (!isNaN(Number(value))) {
-              setChildAge(value === "" ? "" : parseInt(value));
-            }
-          }}
-        />
-
-        <FormInput
-          label="Fri text (t.ex. intressen, preferenser)"
-          type="text"
-          value={preferences}
-          onChange={(e) => setPreferences(e.target.value)}
-        />
-
-        <div className="mt-4">
-          <label htmlFor="activityType">Typ av aktivitet:</label>
-          <select
-            id="activityType"
-            value={activityType}
-            onChange={(e) => setActivityType(e.target.value)}
-            className="w-full mt-2 p-2 border rounded"
-          >
-            <option value="">Välj typ av aktivitet</option>
-            <option value="outdoor">Utomhus</option>
-            <option value="indoor">Inomhus</option>
-            <option value="cultural">Kulturell</option>
-            <option value="sport">Sport</option>
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <label htmlFor="duration">Längd:</label>
-          <select
-            id="duration"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            className="w-full mt-2 p-2 border rounded"
-          >
-            <option value="">Välj längd på aktiviteten</option>
-            <option value="30">30 minuter</option>
-            <option value="60">1 timme</option>
-            <option value="allDay">Hela dagen</option>
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <label htmlFor="budget">Budget:</label>
-          <select
-            id="budget"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-            className="w-full mt-2 p-2 border rounded"
-          >
-            <option value="">Välj budget</option>
-            <option value="free">Gratis</option>
-            <option value="low">Låg kostnad</option>
-            <option value="medium">Medel</option>
-            <option value="high">Hög kostnad</option>
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <label htmlFor="equipment">
-            <input
-              id="equipment"
-              type="checkbox"
-              checked={equipment}
-              onChange={(e) => setEquipment(e.target.checked)}
-              className="mr-2"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label
+              htmlFor="childAge"
+              className="text-lg font-bold text-primary"
+            >
+              Ålder
+            </label>
+            <Input
+              id="childAge"
+              type="text"
+              value={childAge}
+              placeholder="Barnets ålder"
+              className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
+              onChange={(e) => {
+                const value = e.target.value;
+                if (!isNaN(Number(value))) {
+                  setChildAge(value === "" ? "" : parseInt(value));
+                }
+              }}
             />
-            Krävs utrustning (t.ex. cykel, sportutrustning)
-          </label>
+          </div>
+
+          <div>
+            <label
+              htmlFor="preferences"
+              className="text-lg font-bold text-primary"
+            >
+              Preferenser
+            </label>
+            <Input
+              id="preferences"
+              type="text"
+              value={preferences}
+              placeholder="T.ex. sport, musik, pyssel, djur"
+              className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
+              onChange={(e) => setPreferences(e.target.value)}
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-lg font-bold text-primary">
+              Typ av aktivitet
+            </label>
+            <Select
+              value={activityType}
+              onValueChange={(value) => setActivityType(value)}
+            >
+              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+                <SelectValue placeholder="Välj typ av aktivitet" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="outdoor">Utomhus</SelectItem>
+                <SelectItem value="indoor">Inomhus</SelectItem>
+                <SelectItem value="cultural">Kulturell</SelectItem>
+                <SelectItem value="sport">Sport</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-lg font-bold text-primary">Längd</label>
+            <Select
+              value={duration}
+              onValueChange={(value) => setDuration(value)}
+            >
+              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+                <SelectValue placeholder="Välj längd på aktiviteten" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="30">30 minuter</SelectItem>
+                <SelectItem value="60">1 timme</SelectItem>
+                <SelectItem value="allDay">Hela dagen</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-lg font-bold text-primary">Budget</label>
+            <Select value={budget} onValueChange={(value) => setBudget(value)}>
+              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+                <SelectValue placeholder="Välj budget" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="free">Gratis</SelectItem>
+                <SelectItem value="low">Låg kostnad</SelectItem>
+                <SelectItem value="medium">Medel</SelectItem>
+                <SelectItem value="high">Hög kostnad</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <button
+        <Button
+          variant="default"
+          size="default"
           type="submit"
-          className="bg-primary text-white py-2 px-4 rounded hover:bg-secondary mt-4"
-          disabled={geoLoading} // Disable button while fetching location
+          disabled={geoLoading}
+          className="mt-6 bg-secondary text-secondary-foreground hover:bg-secondary-600"
         >
           {geoLoading ? "Hämtar plats..." : "Få rekommendationer"}
-        </button>
+        </Button>
       </form>
 
       {geoLoading && <ChatLoader />}
       {loading && <ChatLoader />}
-
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 mt-4">{error}</p>}
       {recommendation && (
         <RecommendationDisplay recommendation={recommendation} />
       )}

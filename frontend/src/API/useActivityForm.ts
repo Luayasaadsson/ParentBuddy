@@ -13,8 +13,7 @@ export const useActivityForm = () => {
     longitude: number,
     activityType: string,
     duration: string,
-    budget: string,
-    equipment: boolean
+    budget: string
   ) => {
     setLoading(true);
     setError(null);
@@ -26,8 +25,7 @@ export const useActivityForm = () => {
         longitude,
         activityType,
         duration,
-        budget,
-        equipment
+        budget
       );
       setRecommendation(result);
     } catch {

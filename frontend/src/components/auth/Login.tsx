@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "./../../API/useAuth";
-import FormInput from "./../common/FormInput";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,29 +15,40 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
-      <h2>Logga in</h2>
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <FormInput
-          label="Lösenord"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="bg-primary text-white py-2 px-4 rounded hover:bg-secondary"
-        >
-          Logga in
-        </button>
-      </form>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="flex justify-center items-center w-full bg-background">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Logga in</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email">Email</label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                placeholder="Skriv din email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="password">Lösenord</label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                placeholder="Skriv ditt lösenord"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <Button type="submit" variant="default" size="default">
+              Logga in
+            </Button>
+          </form>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+        </CardContent>
+      </Card>
     </div>
   );
 };
