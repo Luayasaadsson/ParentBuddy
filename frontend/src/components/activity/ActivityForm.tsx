@@ -17,67 +17,78 @@ interface ActivityFormProps {
 }
 
 const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
-  const [childAge, setChildAge] = useState<number | "">("");
-  const [preferences, setPreferences] = useState<string>("");
-  const [activityType, setActivityType] = useState<string>("");
-  const [duration, setDuration] = useState<string>("");
-  const [budget, setBudget] = useState<string>("");
+  // Collected state for all form fields
+  const [formData, setFormData] = useState({
+    childAge: "",
+    preferences: "",
+    activityType: "",
+    duration: "",
+    budget: "",
+  });
+
+  // Hooks from useActivityForm
   const { recommendation, loading, error, fetchRecommendations } =
     useActivityForm();
   const [geoLoading, setGeoLoading] = useState(false);
+  const [isLocationDenied, setIsLocationDenied] = useState(false);
 
-  // Function to get user location
+  // Handle changes in form fields
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  // Get the user's location or handle denied location sharing
   const getUserLocation = (): Promise<{
-    latitude: number;
-    longitude: number;
+    latitude: number | null;
+    longitude: number | null;
   }> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
+            setIsLocationDenied(false); // Reset if location sharing is approved
             resolve({
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
             });
           },
-          () => reject("User denied Geolocation")
+          () => {
+            // If the user denies location sharing, set isLocationDenied to true
+            setIsLocationDenied(true);
+            resolve({ latitude: null, longitude: null });
+          }
         );
       } else {
-        reject("Geolocation not available");
+        // If geolocation is not supported, handle as if location sharing is denied
+        setIsLocationDenied(true);
+        resolve({ latitude: null, longitude: null });
       }
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeoLoading(true);
 
-    // Default position if geolocation is not available
-    const defaultLatitude = 59.3293; // Stockholm
-    const defaultLongitude = 18.0686;
-
     try {
       const { latitude, longitude } = await getUserLocation();
+
+      // Sending recommendations with or without coordinates depending on the user's location
       await fetchRecommendations(
-        Number(childAge),
-        preferences,
+        Number(formData.childAge),
+        formData.preferences,
         latitude,
         longitude,
-        activityType,
-        duration,
-        budget
+        formData.activityType,
+        formData.duration,
+        formData.budget
       );
     } catch (error) {
       console.warn(error);
-      await fetchRecommendations(
-        Number(childAge),
-        preferences,
-        defaultLatitude,
-        defaultLongitude,
-        activityType,
-        duration,
-        budget
-      );
     } finally {
       setGeoLoading(false);
     }
@@ -98,16 +109,12 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
             </label>
             <Input
               id="childAge"
+              name="childAge"
               type="text"
-              value={childAge}
+              value={formData.childAge}
               placeholder="Barnets ålder"
               className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
-              onChange={(e) => {
-                const value = e.target.value;
-                if (!isNaN(Number(value))) {
-                  setChildAge(value === "" ? "" : parseInt(value));
-                }
-              }}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -120,11 +127,12 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
             </label>
             <Input
               id="preferences"
+              name="preferences"
               type="text"
-              value={preferences}
+              value={formData.preferences}
               placeholder="T.ex. sport, musik, pyssel, djur"
               className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
-              onChange={(e) => setPreferences(e.target.value)}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -133,8 +141,11 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
               Typ av aktivitet
             </label>
             <Select
-              value={activityType}
-              onValueChange={(value) => setActivityType(value)}
+              name="activityType"
+              value={formData.activityType}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, activityType: value }))
+              }
             >
               <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
                 <SelectValue placeholder="Välj typ av aktivitet" />
@@ -151,8 +162,11 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
           <div className="md:col-span-2">
             <label className="text-lg font-bold text-primary">Längd</label>
             <Select
-              value={duration}
-              onValueChange={(value) => setDuration(value)}
+              name="duration"
+              value={formData.duration}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, duration: value }))
+              }
             >
               <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
                 <SelectValue placeholder="Välj längd på aktiviteten" />
@@ -167,7 +181,13 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
 
           <div className="md:col-span-2">
             <label className="text-lg font-bold text-primary">Budget</label>
-            <Select value={budget} onValueChange={(value) => setBudget(value)}>
+            <Select
+              name="budget"
+              value={formData.budget}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, budget: value }))
+              }
+            >
               <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
                 <SelectValue placeholder="Välj budget" />
               </SelectTrigger>
@@ -188,7 +208,9 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
           disabled={geoLoading}
           className="mt-6 bg-secondary text-secondary-foreground hover:bg-secondary-600"
         >
-          {geoLoading ? "Hämtar plats..." : "Få rekommendationer"}
+          {geoLoading && !isLocationDenied
+            ? "Hämtar plats..."
+            : "Få rekommendationer"}
         </Button>
       </form>
 

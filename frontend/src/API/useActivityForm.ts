@@ -9,8 +9,8 @@ export const useActivityForm = () => {
   const fetchRecommendations = async (
     childAge: number,
     preferences: string,
-    latitude: number,
-    longitude: number,
+    latitude: number | null,
+    longitude: number | null,
     activityType: string,
     duration: string,
     budget: string
@@ -21,8 +21,8 @@ export const useActivityForm = () => {
       const result = await getActivityRecommendations(
         childAge,
         preferences,
-        latitude,
-        longitude,
+        latitude ?? 0,
+        longitude ?? 0,
         activityType,
         duration,
         budget

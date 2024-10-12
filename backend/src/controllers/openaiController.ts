@@ -58,17 +58,29 @@ export const getActivityRecommendations = async (
       return;
     }
 
-    // Analyze the text and determine the language
+    // Detect the language based on preferences
     const language = await detectLanguage(preferences);
 
-    // Adjust the language in the OpenAI request
-    const systemMessage: ChatCompletionMessageParam = {
-      role: "system",
-      content:
-        language === "swedish"
-          ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på barnets ålder, plats (${location.latitude}, ${location.longitude}), preferenser, aktivitetstyp, längd på aktivitet och budget.`
-          : `You are an expert in providing parents with activity suggestions for children. Provide recommendations in English based on the child's age, location (${location.latitude}, ${location.longitude}), preferences, activity type, duration, and budget.`,
-    };
+    let systemMessage: ChatCompletionMessageParam;
+    if (!location || !location.latitude || !location.longitude) {
+      // If location is missing, use generic recommendations without location information
+      systemMessage = {
+        role: "system",
+        content:
+          language === "swedish"
+            ? "Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge generella rekommendationer på svenska baserat på barnets ålder, preferenser, aktivitetstyp, längd på aktivitet och budget."
+            : "You are an expert in providing parents with activity suggestions for children. Provide general recommendations in English based on the child's age, preferences, activity type, duration, and budget.",
+      };
+    } else {
+      // If location exists, include location in the recommendations
+      systemMessage = {
+        role: "system",
+        content:
+          language === "swedish"
+            ? `Du är en expert på att ge föräldrar förslag på aktiviteter för barn i Sverige. Ge rekommendationer på svenska baserat på barnets ålder, plats (${location.latitude}, ${location.longitude}), preferenser, aktivitetstyp, längd på aktivitet och budget.`
+            : `You are an expert in providing parents with activity suggestions for children. Provide recommendations in English based on the child's age, location (${location.latitude}, ${location.longitude}), preferences, activity type, duration, and budget.`,
+      };
+    }
 
     const userMessage: ChatCompletionMessageParam = {
       role: "user",
@@ -89,7 +101,9 @@ export const getActivityRecommendations = async (
       user: user._id,
       recommendations: recommendation,
       preferences: preferences,
-      location: { latitude: location.latitude, longitude: location.longitude },
+      location: location
+        ? { latitude: location.latitude, longitude: location.longitude }
+        : null,
       activityType,
       duration,
       budget,
