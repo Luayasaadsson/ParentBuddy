@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/userModel";
+import { validateAndHashPassword } from "../utils/validators";
 
 // Registration function
 export const registerUser = async (
@@ -11,15 +12,18 @@ export const registerUser = async (
   const { name, email, password, location } = req.body;
 
   try {
+    const { error, hashedPassword } = await validateAndHashPassword(password);
+    if (error) {
+      res.status(400).json({ message: error });
+      return;
+    }
+
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       res.status(400).json({ message: "Email address is already registered" });
       return;
     }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user without childAge
     const newUser = new User({

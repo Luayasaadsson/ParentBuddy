@@ -7,12 +7,21 @@ import { Button } from "@/components/ui/button";
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [submitted, setSubmitted] = useState(false);
   const { error, handleLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
+
+    if (!email || !password) {
+      return;
+    }
     await handleLogin(email, password);
   };
+
+  const emailHasError = submitted && !email;
+  const passwordHasError = submitted && !password;
 
   return (
     <div className="flex justify-center items-center w-full dark:bg-gray-700 dark:text-white transition-colors duration-300">
@@ -30,6 +39,7 @@ const Login: React.FC = () => {
                 value={email}
                 placeholder="Skriv din email"
                 onChange={(e) => setEmail(e.target.value)}
+                className={emailHasError ? "border border-red-500" : ""}
               />
             </div>
             <div>
@@ -40,13 +50,14 @@ const Login: React.FC = () => {
                 value={password}
                 placeholder="Skriv ditt lösenord"
                 onChange={(e) => setPassword(e.target.value)}
+                className={passwordHasError ? "border border-red-500" : ""}
               />
             </div>
             <Button type="submit" variant="default" size="default">
               Logga in
             </Button>
           </form>
-          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
         </CardContent>
       </Card>
     </div>

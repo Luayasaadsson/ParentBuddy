@@ -13,9 +13,17 @@ export const useAuth = () => {
       window.location.reload();
     } catch (err: unknown) {
       if (err instanceof AxiosError && err.response) {
-        setError(err.response.data.message || "Inloggning misslyckades");
+        const serverMessage = err.response.data.message;
+
+        if (serverMessage === "Incorrect password") {
+          setError("Felaktigt lösenord, försök igen.");
+        } else if (serverMessage === "User not found") {
+          setError("Användaren hittades inte, vänligen kontrollera din email.");
+        } else {
+          setError(serverMessage || "Inloggning misslyckades.");
+        }
       } else {
-        setError("Inloggning misslyckades");
+        setError("Inloggning misslyckades.");
       }
     }
   };
@@ -27,7 +35,6 @@ export const useAuth = () => {
   ) => {
     try {
       await registerUser(name, email, password);
-
       const token = await loginUser(email, password);
       localStorage.setItem("token", token);
       setSuccess("Användare skapad och inloggad.");
@@ -35,10 +42,21 @@ export const useAuth = () => {
       window.location.reload();
     } catch (err: unknown) {
       if (err instanceof AxiosError) {
-        setError(
-          err.response?.data.message ||
-            "Registreringen misslyckades. Försök igen."
-        );
+        const serverMessage = err.response?.data.message;
+
+        if (serverMessage === "Email address is already registered") {
+          setError(
+            "E-postadressen finns redan registrerad. Vänligen logga in."
+          );
+        } else if (
+          serverMessage === "Password must be at least 6 characters."
+        ) {
+          setError("Lösenordet måste vara minst 6 tecken.");
+        } else {
+          setError(
+            serverMessage || "Registreringen misslyckades. Försök igen."
+          );
+        }
       }
     }
   };
