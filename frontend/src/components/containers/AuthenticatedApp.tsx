@@ -21,24 +21,24 @@ const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({
 }) => {
   return (
     <div className="p-8">
-      <h1 className="text-5xl font-bold text-primary text-center mb-12">
+      <h1 className="text-2xl md:text-5xl font-bold text-primary text-center mb-12">
         Parent
         <span className="text-secondary">Buddy</span>
       </h1>
 
       <nav className="flex justify-center items-center space-x-6 mb-8">
-        <Button asChild variant="secondary">
+        <Button asChild variant="secondary" size="sm" className="text-xs md:text-lg">
           <Link to="/app">Hem</Link>
         </Button>
-        <Button asChild variant="default">
+        <Button asChild variant="default" size="sm" className="text-xs md:text-lg">
           <Link to="/app/favorites">Favoriter</Link>
         </Button>
-        <Button variant="destructive" onClick={logout}>
+        <Button variant="destructive" onClick={logout} size="sm" className="text-xs md:text-lg">
           Logga ut
         </Button>
       </nav>
 
-      <div className="text-center text-xl text-secondary mb-4">
+      <div className="text-center text-sm md:text-lg text-secondary mb-4">
         {userName && `Välkommen tillbaka, ${userName}!`}
       </div>
 

@@ -26,6 +26,11 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
     budget: "",
   });
 
+  // State for validation errors
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
+
   // Hooks from useActivityForm
   const { recommendation, loading, error, fetchRecommendations } =
     useActivityForm();
@@ -38,6 +43,13 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
   ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
+    setValidationErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  // Handle Select component changes
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setValidationErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   // Get the user's location or handle denied location sharing
@@ -72,6 +84,33 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validating form fields
+    const errors: { [key: string]: string } = {};
+
+    if (!formData.childAge) {
+      errors.childAge = "Ålder är obligatoriskt.";
+    }
+    if (!formData.preferences) {
+      errors.preferences = "Preferenser är obligatoriskt.";
+    }
+    if (!formData.activityType) {
+      errors.activityType = "Typ av aktivitet är obligatoriskt.";
+    }
+    if (!formData.duration) {
+      errors.duration = "Längd är obligatoriskt.";
+    }
+    if (!formData.budget) {
+      errors.budget = "Budget är obligatoriskt.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    } else {
+      setValidationErrors({});
+    }
+
     setGeoLoading(true);
 
     try {
@@ -103,7 +142,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
           <div>
             <label
               htmlFor="childAge"
-              className="text-lg font-bold text-primary"
+              className="text-sm md:text-lg font-bold text-primary"
             >
               Ålder
             </label>
@@ -113,15 +152,22 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
               type="text"
               value={formData.childAge}
               placeholder="Barnets ålder"
-              className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
+              className={`mt-2 border ${
+                validationErrors.childAge ? "border-red-500" : "border-gray-300"
+              } focus:border-primary focus:ring-primary`}
               onChange={handleInputChange}
             />
+            {validationErrors.childAge && (
+              <p className="text-red-500 text-sm mt-1">
+                {validationErrors.childAge}
+              </p>
+            )}
           </div>
 
           <div>
             <label
               htmlFor="preferences"
-              className="text-lg font-bold text-primary"
+              className="text-sm md:text-lg font-bold text-primary"
             >
               Preferenser
             </label>
@@ -131,23 +177,38 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
               type="text"
               value={formData.preferences}
               placeholder="T.ex. sport, musik, pyssel, djur"
-              className="mt-2 border border-gray-300 focus:border-primary focus:ring-primary"
+              className={`mt-2 border ${
+                validationErrors.preferences
+                  ? "border-red-500"
+                  : "border-gray-300"
+              } focus:border-primary focus:ring-primary`}
               onChange={handleInputChange}
             />
+            {validationErrors.preferences && (
+              <p className="text-red-500 text-sm mt-1">
+                {validationErrors.preferences}
+              </p>
+            )}
           </div>
 
           <div className="md:col-span-2">
-            <label className="text-lg font-bold text-primary">
+            <label className="text-sm md:text-lg font-bold text-primary">
               Typ av aktivitet
             </label>
             <Select
               name="activityType"
               value={formData.activityType}
               onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, activityType: value }))
+                handleSelectChange("activityType", value)
               }
             >
-              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+              <SelectTrigger
+                className={`w-full mt-2 border ${
+                  validationErrors.activityType
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:border-primary focus:ring-primary`}
+              >
                 <SelectValue placeholder="Välj typ av aktivitet" />
               </SelectTrigger>
               <SelectContent>
@@ -157,18 +218,29 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
                 <SelectItem value="sport">Sport</SelectItem>
               </SelectContent>
             </Select>
+            {validationErrors.activityType && (
+              <p className="text-red-500 text-sm mt-1">
+                {validationErrors.activityType}
+              </p>
+            )}
           </div>
 
           <div className="md:col-span-2">
-            <label className="text-lg font-bold text-primary">Längd</label>
+            <label className="text-sm md:text-lg font-bold text-primary">
+              Längd
+            </label>
             <Select
               name="duration"
               value={formData.duration}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, duration: value }))
-              }
+              onValueChange={(value) => handleSelectChange("duration", value)}
             >
-              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+              <SelectTrigger
+                className={`w-full mt-2 border ${
+                  validationErrors.duration
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:border-primary focus:ring-primary`}
+              >
                 <SelectValue placeholder="Välj längd på aktiviteten" />
               </SelectTrigger>
               <SelectContent>
@@ -177,18 +249,27 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
                 <SelectItem value="allDay">Hela dagen</SelectItem>
               </SelectContent>
             </Select>
+            {validationErrors.duration && (
+              <p className="text-red-500 text-sm mt-1">
+                {validationErrors.duration}
+              </p>
+            )}
           </div>
 
           <div className="md:col-span-2">
-            <label className="text-lg font-bold text-primary">Budget</label>
+            <label className="text-sm md:text-lg font-bold text-primary">
+              Budget
+            </label>
             <Select
               name="budget"
               value={formData.budget}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, budget: value }))
-              }
+              onValueChange={(value) => handleSelectChange("budget", value)}
             >
-              <SelectTrigger className="w-full mt-2 border border-gray-300 focus:border-primary focus:ring-primary">
+              <SelectTrigger
+                className={`w-full mt-2 border ${
+                  validationErrors.budget ? "border-red-500" : "border-gray-300"
+                } focus:border-primary focus:ring-primary`}
+              >
                 <SelectValue placeholder="Välj budget" />
               </SelectTrigger>
               <SelectContent>
@@ -198,15 +279,20 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onNewRecommendation }) => {
                 <SelectItem value="high">Hög kostnad</SelectItem>
               </SelectContent>
             </Select>
+            {validationErrors.budget && (
+              <p className="text-red-500 text-sm mt-1">
+                {validationErrors.budget}
+              </p>
+            )}
           </div>
         </div>
 
         <Button
           variant="default"
-          size="default"
+          size="sm"
           type="submit"
           disabled={geoLoading}
-          className="mt-6 bg-secondary text-secondary-foreground hover:bg-secondary-600"
+          className="mt-6 bg-secondary text-secondary-foreground hover:bg-secondary-600 text-xs md:text-md"
         >
           {geoLoading && !isLocationDenied
             ? "Hämtar plats..."
