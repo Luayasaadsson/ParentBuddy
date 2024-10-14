@@ -4,6 +4,7 @@ import ActivityForm from "./../activity/ActivityForm";
 import ActivityHistory from "./../activity/ActivityHistory";
 import FavoriteActivities from "./../activity/FavoriteActivities";
 import { Button } from "@/components/ui/button";
+import ScrollToTopButton from "../shared/ScrollButton";
 
 interface AuthenticatedAppProps {
   userName: string | null;
@@ -62,6 +63,7 @@ const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({
           />
         </Routes>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 };
