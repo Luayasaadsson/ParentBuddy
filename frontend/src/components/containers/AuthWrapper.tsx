@@ -9,18 +9,18 @@ const AuthWrapper: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen dark:bg-gray-700 dark:text-white transition-colors duration-300">
       <div className="p-6">
         <Button onClick={() => navigate("/")} variant="secondary" size="sm">
           &larr; Tillbaka
         </Button>
       </div>
 
-      <div className="flex flex-col justify-center items-center flex-grow">
+      <div className="flex flex-col justify-center items-center flex-grow p-2">
         {isRegistering ? <RegisterUser /> : <Login />}
         <Button
           onClick={() => setIsRegistering(!isRegistering)}
-          variant="default"
+          variant="secondary"
           size="lg"
           className="mt-4"
         >

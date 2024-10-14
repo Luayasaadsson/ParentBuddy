@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-full bg-background">
+    <div className="flex justify-center items-center w-full dark:bg-gray-700 dark:text-white transition-colors duration-300">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Logga in</CardTitle>

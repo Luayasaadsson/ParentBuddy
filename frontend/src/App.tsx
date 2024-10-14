@@ -9,6 +9,7 @@ import { useAuthStatus } from "./components/hooks/useAuthStatus";
 import AuthWrapper from "./components/containers/AuthWrapper";
 import AuthenticatedApp from "./components/containers/AuthenticatedApp";
 import LandingPage from "./components/activity/LandingPage";
+import Layout from "./components/shared/Layout";
 
 const App: React.FC = () => {
   const { isAuthenticated, logout } = useAuthStatus();
@@ -28,8 +29,8 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-background">
-        <Routes>
+      <Routes>
+        <Route element={<Layout />}>
           <Route
             path="/"
             element={isAuthenticated ? <Navigate to="/app" /> : <LandingPage />}
@@ -53,8 +54,8 @@ const App: React.FC = () => {
               )
             }
           />
-        </Routes>
-      </div>
+        </Route>
+      </Routes>
     </Router>
   );
 };
