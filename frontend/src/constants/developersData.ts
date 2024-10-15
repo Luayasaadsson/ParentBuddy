@@ -4,7 +4,7 @@ export const developers = [
     role: "Fullstack Developer",
     description:
       "Fullstack-JavaScript utvecklare under utbildning på Chas Academy.",
-    image: "/src/images/Dev1.jpeg",
+    image: "/src/assets/img.png",
     email: "luay.asaadsson@chasacademy.com",
     github: "https://github.com/Luayasaadsson",
     linkedin: "https://www.linkedin.com/in/luay-asaadsson-432916280/",

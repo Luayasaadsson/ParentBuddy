@@ -29,7 +29,7 @@ const DevelopersPage: React.FC = () => {
             <img
               src={developer.image}
               alt={`${developer.name}'s image`}
-              className="w-48 h-48 rounded-full mx-auto mb-4"
+              className="w-48 h-52 rounded-full mx-auto mb-4"
             />
             <h2 className="text-xl font-bold text-primary">{developer.name}</h2>
             <p className="text-secondary mb-2">{developer.role}</p>
