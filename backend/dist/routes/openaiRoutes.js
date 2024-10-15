@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const openaiController_1 = require("../controllers/openaiController");
+const authMiddleware_1 = require("../middleware/authMiddleware");
+const router = (0, express_1.Router)();
+router.post("/activities", authMiddleware_1.authenticateJWT, openaiController_1.getActivityRecommendations);
+router.get("/history", authMiddleware_1.authenticateJWT, openaiController_1.getActivityHistory);
+router.put("/activities/:activityId/favorite", authMiddleware_1.authenticateJWT, openaiController_1.toggleFavoriteActivity);
+router.get("/favorites", authMiddleware_1.authenticateJWT, openaiController_1.getFavoriteActivities);
+router.delete("/activities/:activityId", authMiddleware_1.authenticateJWT, openaiController_1.deleteActivity);
+exports.default = router;
