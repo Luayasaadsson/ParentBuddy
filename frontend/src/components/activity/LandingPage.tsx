@@ -11,7 +11,7 @@ const LandingPage: React.FC = () => {
         <span className="text-secondary">Buddy</span>
       </h1>
 
-      <p className="text-sm md:text-xl text-center mb-8 w-3/6">
+      <p className="text-sm md:text-xl text-center mb-8 w-3/4">
         <span className="text-primary font-bold">Parent</span>
         <span className="text-secondary font-bold">Buddy</span> hjälper dig som
         förälder att enkelt hitta spännande aktiviteter att göra med dina barn,

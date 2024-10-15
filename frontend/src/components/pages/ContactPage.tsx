@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import ScrollToTopButton from "../shared/ScrollButton";
 import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa";
 
 const ContactPage: React.FC = () => {
@@ -161,6 +162,7 @@ const ContactPage: React.FC = () => {
           </a>
         </div>
       </div>
+      <ScrollToTopButton />
     </div>
   );
 };

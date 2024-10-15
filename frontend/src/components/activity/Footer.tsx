@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="mt-4 text-center text-sm">
-        © {currentYear} ParentBuddy. Alla rättigheter förbehållna.
+        © {currentYear} ParentBuddy
       </div>
     </footer>
   );
