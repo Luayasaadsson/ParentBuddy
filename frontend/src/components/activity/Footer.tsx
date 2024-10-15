@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="mb-4 md:mb-0">
-          <ul className="flex space-x-4 flex-wrap justify-center text-sm md:text-lg">
+          <ul className="flex space-x-4 gap-4 flex-wrap justify-center text-sm md:text-lg">
             <li>
               <Link to="/about" className="hover:text-primary">
                 Om oss
