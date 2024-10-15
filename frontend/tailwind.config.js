@@ -6,7 +6,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "hsl(180, 75%, 60%)",
+          DEFAULT: "hsl(180, 75%, 40%)",
           foreground: "hsl(0, 0%, 100%)",
         },
         secondary: {
@@ -44,6 +44,9 @@ export default {
         lg: "12px",
         md: "8px",
         sm: "4px",
+      },
+      fontFamily: {
+        sans: ["Roboto", "sans-serif"],
       },
     },
   },

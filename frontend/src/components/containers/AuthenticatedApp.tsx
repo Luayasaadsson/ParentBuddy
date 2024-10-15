@@ -27,13 +27,28 @@ const AuthenticatedApp: React.FC<AuthenticatedAppProps> = ({
       </h1>
 
       <nav className="flex justify-center items-center space-x-6 mb-8">
-        <Button asChild variant="secondary" size="sm" className="text-xs md:text-lg">
+        <Button
+          asChild
+          variant="secondary"
+          size="sm"
+          className="text-xs md:text-lg"
+        >
           <Link to="/app">Hem</Link>
         </Button>
-        <Button asChild variant="default" size="sm" className="text-xs md:text-lg">
+        <Button
+          asChild
+          variant="default"
+          size="sm"
+          className="text-xs md:text-lg"
+        >
           <Link to="/app/favorites">Favoriter</Link>
         </Button>
-        <Button variant="destructive" onClick={logout} size="sm" className="text-xs md:text-lg">
+        <Button
+          variant="destructive"
+          onClick={logout}
+          size="sm"
+          className="text-xs md:text-lg"
+        >
           Logga ut
         </Button>
       </nav>

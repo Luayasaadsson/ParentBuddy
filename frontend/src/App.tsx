@@ -10,6 +10,11 @@ import AuthWrapper from "./components/containers/AuthWrapper";
 import AuthenticatedApp from "./components/containers/AuthenticatedApp";
 import LandingPage from "./components/activity/LandingPage";
 import Layout from "./components/shared/Layout";
+import AboutPage from "./components/pages/AboutPage";
+import ContactPage from "./components/pages/ContactPage";
+import PrivacyPolicy from "./components/pages/PrivacyPolicy";
+import TermsOfService from "./components/pages/TermsOfService";
+import DevelopersPage from "./components/pages/DevelopersPage";
 
 const App: React.FC = () => {
   const { isAuthenticated, logout } = useAuthStatus();
@@ -54,6 +59,11 @@ const App: React.FC = () => {
               )
             }
           />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/developers" element={<DevelopersPage />} />
         </Route>
       </Routes>
     </Router>
