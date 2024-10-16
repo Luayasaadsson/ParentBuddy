@@ -3,11 +3,13 @@ import { useAuth } from "./../../API/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ChatLoader from "./../../components/shared/ChatLoader";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { error, handleLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,7 +19,14 @@ const Login: React.FC = () => {
     if (!email || !password) {
       return;
     }
-    await handleLogin(email, password);
+
+    setLoading(true);
+
+    try {
+      await handleLogin(email, password);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const emailHasError = submitted && !email;
@@ -53,11 +62,17 @@ const Login: React.FC = () => {
                 className={passwordHasError ? "border border-red-500" : ""}
               />
             </div>
-            <Button type="submit" variant="default" size="default">
-              Logga in
+            <Button
+              type="submit"
+              variant="default"
+              size="default"
+              disabled={loading}
+            >
+              {loading ? "Loggar in..." : "Logga in"}{" "}
             </Button>
           </form>
           {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
+          {loading && <ChatLoader />}
         </CardContent>
       </Card>
     </div>

@@ -3,12 +3,14 @@ import { useAuth } from "./../../API/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import ChatLoader from "./../../components/shared/ChatLoader";
 
 const RegisterUser: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { error, success, handleRegister } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,7 +20,13 @@ const RegisterUser: React.FC = () => {
     if (!name || !email || !password) {
       return;
     }
-    await handleRegister(name, email, password);
+    setLoading(true);
+
+    try {
+      await handleRegister(name, email, password);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nameHasError = submitted && !name;
@@ -66,12 +74,18 @@ const RegisterUser: React.FC = () => {
                 className={passwordHasError ? "border border-red-500" : ""}
               />
             </div>
-            <Button type="submit" variant="default" size="default">
-              Registrera
+            <Button
+              type="submit"
+              variant="default"
+              size="default"
+              disabled={loading}
+            >
+              {loading ? "Registrerar..." : "Registrera"}
             </Button>
           </form>
           {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
           {success && <p className="text-green-500 mt-2">{success}</p>}
+          {loading && <ChatLoader />}
         </CardContent>
       </Card>
     </div>

@@ -14,6 +14,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import ChatLoader from "./../../components/shared/ChatLoader";
 
 interface FavoriteActivity {
   _id: string;
@@ -30,10 +31,12 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
   onFavoritesUpdated,
 }) => {
   const [favorites, setFavorites] = useState<FavoriteActivity[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Function to fetch favorites
   useEffect(() => {
     const fetchFavorites = async () => {
+      setLoading(true);
       try {
         const result = await getFavoriteActivities();
         const sortedFavorites = result.sort(
@@ -43,6 +46,8 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
         setFavorites(sortedFavorites);
       } catch (err) {
         console.error("Kunde inte hämta favoriter:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -68,7 +73,9 @@ const FavoriteActivities: React.FC<FavoriteActivitiesProps> = ({
         Dina favoritaktiviteter:
       </h2>
 
-      {favorites.length > 0 ? (
+      {loading ? (
+        <ChatLoader />
+      ) : favorites.length > 0 ? (
         <ul className="space-y-4">
           {favorites.map((favorite) => (
             <li
