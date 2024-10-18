@@ -10,7 +10,7 @@ const openaiRoutes_1 = __importDefault(require("./routes/openaiRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: "https://parent-buddy-ecru.vercel.app",
+    origin: ["https://parent-buddy-ecru.vercel.app", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
