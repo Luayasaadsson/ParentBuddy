@@ -2,6 +2,8 @@ import axios from "axios";
 
 const API_URL =
   import.meta.env.VITE_REACT_APP_API_URL || "http://localhost:6006/api";
+  console.log("Using API URL:", API_URL);
+
 
 // Function to get JWT-token from localStorage
 const getToken = () => localStorage.getItem("token");
