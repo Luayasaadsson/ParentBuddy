@@ -7,7 +7,7 @@ import authRoutes from "./routes/authRoutes";
 const app = express();
 app.use(
   cors({
-    origin: ["https://parent-buddy-ecru.vercel.app", "http://localhost:5173"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
