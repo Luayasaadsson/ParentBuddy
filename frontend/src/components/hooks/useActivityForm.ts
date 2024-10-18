@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getActivityRecommendations } from "./api";
+import { getActivityRecommendations } from "../../API/api";
 
 export const useActivityForm = () => {
   const [recommendation, setRecommendation] = useState<string>("");

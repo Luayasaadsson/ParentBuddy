@@ -8,7 +8,7 @@ import {
 import { useAuthStatus } from "./components/hooks/useAuthStatus";
 import AuthWrapper from "./components/containers/AuthWrapper";
 import AuthenticatedApp from "./components/containers/AuthenticatedApp";
-import LandingPage from "./components/activity/LandingPage";
+import LandingPage from "./components/pages/LandingPage";
 import Layout from "./components/shared/Layout";
 import AboutPage from "./components/pages/AboutPage";
 import ContactPage from "./components/pages/ContactPage";

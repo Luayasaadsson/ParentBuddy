@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useActivityForm } from "./../../API/useActivityForm";
+import { useActivityForm } from "../hooks/useActivityForm";
 import ChatLoader from "./../../components/shared/ChatLoader";
-import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
+import RecommendationDisplay from "./RecommendationDisplay";
 import { Button } from "./../ui/button";
 import { Input } from "./../ui/input";
 import {

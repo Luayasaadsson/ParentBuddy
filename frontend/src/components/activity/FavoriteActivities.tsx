@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getFavoriteActivities, deleteFavoriteActivity } from "./../../API/api";
-import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
+import RecommendationDisplay from "./RecommendationDisplay";
 import { Button } from "@/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 import {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useActivityHistory } from "./../../API/useActivityHistory";
-import RecommendationDisplay from "./../../components/shared/RecommendationDisplay";
+import { useActivityHistory } from "./../hooks/useActivityHistory";
+import RecommendationDisplay from "./RecommendationDisplay";
 import ChatLoader from "./../../components/shared/ChatLoader";
 import { Button } from "@/components/ui/button";
 import { FaHeart } from "react-icons/fa";

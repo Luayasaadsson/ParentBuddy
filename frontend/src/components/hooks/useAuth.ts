@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser, registerUser } from "./api";
+import { loginUser, registerUser } from "./../../API/api";
 import { AxiosError } from "axios";
 
 export const useAuth = () => {

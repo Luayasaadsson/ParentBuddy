@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import ThemeToggleButton from "./ThemeToggleButton";
-import Footer from "./../activity/Footer";
+import Footer from "./Footer";
 
 const Layout: React.FC = () => {
   return (

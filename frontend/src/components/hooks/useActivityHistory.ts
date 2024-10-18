@@ -3,7 +3,7 @@ import {
   getActivityHistory,
   toggleFavoriteActivity,
   deleteFavoriteActivity,
-} from "./api";
+} from "./../../API/api";
 
 interface ActivityEntry {
   _id: string;
