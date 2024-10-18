@@ -1,5 +1,7 @@
 import React from "react";
-import "ldrs/helix";
+import { helix } from "ldrs";
+
+helix.register();
 
 const ChatLoader: React.FC = () => {
   return (
